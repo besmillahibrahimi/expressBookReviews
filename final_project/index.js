@@ -10,8 +10,16 @@ app.use(express.json());
 
 app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
 
-app.use("/customer/auth/*", function auth(req,res,next){
-//Write the authenication mechanism here
+app.use("/customer/auth/*", async function auth(req,res,next){
+    const authToken = req.headers['authorization'] ?? req.headers['Authorization'];
+    const token = authToken.startsWith('Bearer ') ? authToken.replace('Bearer ', ''): authToken;
+
+    try {
+        const {} = await jwt.verify(token, 'test_secret')
+        next();
+    }catch(error) {
+        res.status(401).send("Please first login.")
+    }
 });
  
 const PORT =5000;
