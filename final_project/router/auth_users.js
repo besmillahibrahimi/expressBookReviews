@@ -39,10 +39,11 @@ regd_users.post("/login", async (req, res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
+  const isbn = req.params.isbn;
   const username = req.session.authorization["username"];
-  books[req.params.isbn].reviews[username] = req.body.review;
+  books[isbn].reviews[username] = req.query.review ?? req.body.review;
 
-  return res.status(200).json({ message: "You have added your review for this book." });
+  return res.status(200).json({ message: `You have added/modified a review for book with isb ${isbn}.` });
 });
 
 regd_users.delete("/auth/review/:isbn", (req, res) => {
